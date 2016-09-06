@@ -74,14 +74,19 @@ With this configuration, the LDAP realm will be able to authenticate your user w
 When authenticating the user, the LDAP Realm also puts in the user principals an entry point to the user LDAP attributes: _LdapUserContext_. You can then call the LdapService to retrieve attributes.
 
 ```java
-    @Inject
-    private SecuritySupport securitySupport;
-    @Inject
-    private LdapService ldapService;
-    ...........
-    
-        LdapUserContext userContext = securitySupport.getPrincipalsByType(LdapUserContext.class).iterator().next().getPrincipal();
-        String cn = ldapService.getAttributeValue(userContext, "cn")
+@Inject
+private SecuritySupport securitySupport;
+@Inject
+private LdapService ldapService;
+
+public void someMethod() {
+    LdapUserContext userContext = securitySupport
+                                    .getPrincipalsByType(LdapUserContext.class)
+                                    .iterator()
+                                    .next()
+                                    .getPrincipal();
+    String cn = ldapService.getAttributeValue(userContext, "cn")
+}
 ```
 
 ## For any user
@@ -89,12 +94,13 @@ When authenticating the user, the LDAP Realm also puts in the user principals an
 You can also use the LdapService and LdapUserContext to retrieve user attributes from any user that you know the id
 
 ```java
-    @Inject
-    private LdapService ldapService;
-    ................
-    
+@Inject
+private LdapService ldapService;
+
+public void someMethod() {
     LdapUserContext userContext = ldapService.findUser(userId);
     String cn = userContext.getAttributeValue(userContext, "cn");
+}
 ```
 
 # List a user groups
@@ -102,12 +108,13 @@ You can also use the LdapService and LdapUserContext to retrieve user attributes
 Once you have the user context you can also retrieve the list of the user groups
 
 ```java
-    @Inject
-    private LdapService ldapService;
-    ................
-    
+@Inject
+private LdapService ldapService;
+
+public void someMethod() {
     LdapUserContext userContext = ldapService.findUser(userId);
     Set<String> groups  = userContext.retrieveUserGroups(userContext);
+}
 ```
 
 # Going further
@@ -115,12 +122,10 @@ Once you have the user context you can also retrieve the list of the user groups
 Seed uses [unboundid](https://www.unboundid.com/) library to connect to the ldap. You can inject its core component into your class to use it. Note that the connections you take from the pool are already configured and ready to be used.
 
 ```java
-    @Inject
-    private LDAPConnectionPool ldapConnectionPool;
+@Inject
+private LDAPConnectionPool ldapConnectionPool;
 
-    public void someMethod() {
-        ...
-        ldapConnectionPool.search(...);
-        ...
-    }
+public void someMethod() {
+    ldapConnectionPool.search(...);
+}
 ```
