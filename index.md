@@ -24,7 +24,7 @@ Seed ldap addon enables your application to connect to a LDAP to identify, auten
 
 {{< dependency g="org.seedstack.addons.ldap" a="ldap" >}}
 
-#Configuration
+# Configuration
 
 In your properties file, you can add the following properties to configure the connection to the LDAP
 
@@ -67,9 +67,9 @@ jedi = lightSaber:*, academy:*
 
 With this configuration, the LDAP realm will be able to authenticate your user with their id and password, and retrieve the groups through the LDAP.
 
-#Retrieving attributes
+# Retrieving attributes
 
-##From the current user
+## From the current user
 
 When authenticating the user, the LDAP Realm also puts in the user principals an entry point to the user LDAP attributes: _LdapUserContext_. You can then call the LdapService to retrieve attributes.
 
@@ -84,7 +84,7 @@ When authenticating the user, the LDAP Realm also puts in the user principals an
         String cn = ldapService.getAttributeValue(userContext, "cn")
 ```
 
-##For any user
+## For any user
 
 You can also use the LdapService and LdapUserContext to retrieve user attributes from any user that you know the id
 
@@ -97,7 +97,7 @@ You can also use the LdapService and LdapUserContext to retrieve user attributes
     String cn = userContext.getAttributeValue(userContext, "cn");
 ```
 
-#List a user groups
+# List a user groups
 
 Once you have the user context you can also retrieve the list of the user groups
 
@@ -110,14 +110,17 @@ Once you have the user context you can also retrieve the list of the user groups
     Set<String> groups  = userContext.retrieveUserGroups(userContext);
 ```
 
-#Going further
+# Going further
 
 Seed uses [unboundid](https://www.unboundid.com/) library to connect to the ldap. You can inject its core component into your class to use it. Note that the connections you take from the pool are already configured and ready to be used.
 
 ```java
     @Inject
     private LDAPConnectionPool ldapConnectionPool;
-    .................
-    
-    ldapConnectionPool.search(.........................
+
+    public void someMethod() {
+        ...
+        ldapConnectionPool.search(...);
+        ...
+    }
 ```
