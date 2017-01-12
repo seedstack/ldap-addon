@@ -7,16 +7,12 @@
  */
 package org.seedstack.ldap.internal;
 
-import org.seedstack.seed.ErrorCode;
+import org.seedstack.shed.exception.ErrorCode;
 
-/**
- * Enum for Error codes in LDAP security support
- */
-public enum LdapErrorCodes implements ErrorCode {
-    // Please keep it ordered
+enum LdapErrorCode implements ErrorCode {
     CONNECT_ERROR,
     INVALID_CREDENTIALS,
     LDAP_ERROR,
-    NO_HOST_DEFINED,
-    NO_SUCH_ACCOUNT,
+    UNKNOWN_BIND_DN,
+    UNKNOWN_USER
 }

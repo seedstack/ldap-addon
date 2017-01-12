@@ -13,12 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 class DefaultLdapUserContext implements LdapUserContext {
-
-    private static final long serialVersionUID = -8670518172669970580L;
-
-    private String dn;
-
-    private Map<String, String> knownAttributes = new HashMap<String, String>();
+    private final String dn;
+    private final Map<String, String> knownAttributes = new HashMap<>();
 
     DefaultLdapUserContext(String dn) {
         this.dn = dn;
@@ -32,5 +28,4 @@ class DefaultLdapUserContext implements LdapUserContext {
     Map<String, String> getKnownAttributes() {
         return knownAttributes;
     }
-
 }

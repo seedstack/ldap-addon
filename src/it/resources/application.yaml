@@ -1,0 +1,27 @@
+#
+# Copyright (c) 2013-2016, The SeedStack authors <http://seedstack.org>
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+#
+
+security:
+  realms: LdapRealm
+  roles:
+    jedi: SEED.JEDI
+  permissions:
+    jedi: ['lightSaber:*', 'academy:*']
+    padawan: 'academy:learn'
+    ghost: 'site:haunt'
+  ldap:
+    host: localhost
+    port: 53800
+    bindDN: cn=admin,ou=people,dc=example,dc=com
+    bindPassword: admin
+    user:
+      baseDN: ou=people,dc=example,dc=com
+      idAttribute: sn
+    group:
+      baseDN: ou=groups,dc=example,dc=com
+

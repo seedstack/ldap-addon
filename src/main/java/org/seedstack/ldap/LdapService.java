@@ -30,17 +30,15 @@ public interface LdapService {
      *
      * @param identityAttributeValue the value of the identifying attribute to search
      * @return the DefaultLDAPUserContext corresponding to the attribute value.
-     * @throws LdapException if an error occurs or if no user matches the attribute value.
      */
-    LdapUserContext findUser(String identityAttributeValue) throws LdapException;
+    LdapUserContext findUser(String identityAttributeValue);
 
     /**
      * Authenticates a user with its context
      *
      * @param userContext the context of a user
-     * @throws LdapException if an error occurs or the user is not authenticated.
      */
-    void authenticate(LdapUserContext userContext, String password) throws LdapException;
+    void authenticate(LdapUserContext userContext, String password);
 
     /**
      * Gives the value of the attribute name passed as parameter. Note that this method will call the LDAP only if the attribute value has not yet
@@ -49,9 +47,8 @@ public interface LdapService {
      * @param userContext the DefaultLDAPUserContext used
      * @param attribute   the name of the attribute
      * @return the value of the attribute passed as a parameter, or null if the attribute does not exist.
-     * @throws LdapException if an error occurs while accessing the LDAP
      */
-    String getAttributeValue(LdapUserContext userContext, String attribute) throws LdapException;
+    String getAttributeValue(LdapUserContext userContext, String attribute);
 
     /**
      * Gives the value of the attribute names passed as parameters. Note that this method will call the LDAP only if the attribute values have not yet
@@ -61,16 +58,14 @@ public interface LdapService {
      * @param userContext the DefaultLDAPUserContext used
      * @param attributes  the names of the attributes
      * @return the values of the attributes passed as a parameters as a map. Non existing attributes in the LDAP will give null values.
-     * @throws LdapException if an error occurs while accessing the LDAP.
      */
-    Map<String, String> getAttributeValues(LdapUserContext userContext, String... attributes) throws LdapException;
+    Map<String, String> getAttributeValues(LdapUserContext userContext, String... attributes);
 
     /**
      * Finds all the groups in which the user is defined as a member. Note that this method will effectively call the LDAP each time it is executed.
      *
      * @param userContext the userContext to use
      * @return the groups as a set of the groups CNs
-     * @throws LdapException if an error occurs while accessing the ldap.
      */
-    Set<String> retrieveUserGroups(LdapUserContext userContext) throws LdapException;
+    Set<String> retrieveUserGroups(LdapUserContext userContext);
 }

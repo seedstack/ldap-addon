@@ -7,23 +7,23 @@
  */
 package org.seedstack.ldap.internal;
 
+import com.unboundid.ldap.sdk.LDAPException;
 import com.unboundid.ldap.sdk.ResultCode;
-import org.seedstack.ldap.LdapException;
 import org.seedstack.ldap.LdapService;
 import org.seedstack.ldap.LdapUserContext;
+import org.seedstack.ldap.LdapUserContextPrincipalProvider;
+import org.seedstack.seed.security.AuthenticationException;
 import org.seedstack.seed.security.AuthenticationInfo;
 import org.seedstack.seed.security.AuthenticationToken;
+import org.seedstack.seed.security.IncorrectCredentialsException;
 import org.seedstack.seed.security.Realm;
 import org.seedstack.seed.security.RoleMapping;
 import org.seedstack.seed.security.RolePermissionResolver;
-import org.seedstack.seed.security.UsernamePasswordToken;
-import org.seedstack.seed.security.AuthenticationException;
-import org.seedstack.seed.security.IncorrectCredentialsException;
 import org.seedstack.seed.security.UnsupportedTokenException;
+import org.seedstack.seed.security.UsernamePasswordToken;
 import org.seedstack.seed.security.principals.PrincipalProvider;
 import org.seedstack.seed.security.principals.Principals;
 import org.seedstack.seed.security.principals.SimplePrincipalProvider;
-import org.seedstack.ldap.LdapUserContextPrincipalProvider;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -51,8 +51,8 @@ class LdapRealm implements Realm {
                 userContext = ldapService.findUser(identity);
             }
             return ldapService.retrieveUserGroups(userContext);
-        } catch (LdapException e) {
-            throw new AuthenticationException(e.getCause().getMessage());
+        } catch (Exception e) {
+            throw new AuthenticationException("Unable to retrieve roles from LDAP realm", e);
         }
     }
 
@@ -66,18 +66,21 @@ class LdapRealm implements Realm {
             LdapUserContext userContext = ldapService.findUser(userNamePasswordToken.getUsername());
             ldapService.authenticate(userContext, new String(userNamePasswordToken.getPassword()));
 
-            AuthenticationInfo authcInfo = new AuthenticationInfo(userNamePasswordToken.getUsername(), userNamePasswordToken.getPassword());
-            authcInfo.getOtherPrincipals().add(new SimplePrincipalProvider("dn", userContext.getDn()));
-            authcInfo.getOtherPrincipals().add(Principals.fullNamePrincipal(ldapService.getAttributeValue(userContext, "cn")));
-            authcInfo.getOtherPrincipals().add(new LdapUserContextPrincipalProvider(userContext));
-            return authcInfo;
-        } catch (LdapException ex) {
-            com.unboundid.ldap.sdk.LDAPException e = (com.unboundid.ldap.sdk.LDAPException) ex.getCause();
-            switch (e.getResultCode().intValue()) {
-                case ResultCode.INVALID_CREDENTIALS_INT_VALUE:
-                    throw new IncorrectCredentialsException(e.getMessage());
-                default:
-                    throw new AuthenticationException(e.getMessage());
+            AuthenticationInfo authenticationInfo = new AuthenticationInfo(userNamePasswordToken.getUsername(), userNamePasswordToken.getPassword());
+            authenticationInfo.getOtherPrincipals().add(new SimplePrincipalProvider("dn", userContext.getDn()));
+            authenticationInfo.getOtherPrincipals().add(Principals.fullNamePrincipal(ldapService.getAttributeValue(userContext, "cn")));
+            authenticationInfo.getOtherPrincipals().add(new LdapUserContextPrincipalProvider(userContext));
+            return authenticationInfo;
+        } catch (Exception e) {
+            Throwable cause = e.getCause();
+            if (cause instanceof LDAPException) {
+                if (((LDAPException) cause).getResultCode().intValue() == ResultCode.INVALID_CREDENTIALS_INT_VALUE) {
+                    throw new IncorrectCredentialsException(cause.getMessage());
+                } else {
+                    throw new AuthenticationException(cause.getMessage());
+                }
+            } else {
+                throw new AuthenticationException("Cannot authenticate user with LDAP", e);
             }
         }
     }
