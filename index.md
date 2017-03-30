@@ -4,11 +4,7 @@ repo: "https://github.com/seedstack/ldap-addon"
 author: Yves DAUTREMAY
 description: "Provides a security realm which authenticates and authorizes subjects with an LDAP directory."
 tags:
-    - "security"
-    - "ldap"
-    - "directory"
-    - "realm"
-    - "shiro"
+    - security
 zones:
     - Addons
 menu:
@@ -16,7 +12,8 @@ menu:
         weight: 10
 ---
 
-Seed ldap addon enables your application to connect to a LDAP to identify, autentify and authorize users.
+SeedStack LDAP addon enables your application to connect to a LDAP to identify, autentify and authorize users.
+<!--more-->
 
 {{< dependency g="org.seedstack.addons.ldap" a="ldap" >}}
 
