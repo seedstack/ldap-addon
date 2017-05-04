@@ -12,57 +12,65 @@ menu:
         weight: 10
 ---
 
-SeedStack LDAP addon enables your application to connect to a LDAP to identify, autentify and authorize users.
-<!--more-->
+SeedStack LDAP addon enables your application to connect to an LDAP directory to identify, authenticate and authorize 
+users. <!--more-->
 
 {{< dependency g="org.seedstack.addons.ldap" a="ldap" >}}
 
 # Configuration
 
-In your properties file, you can add the following properties to configure the connection to the LDAP
+To use the LDAP add-on, its realm must be specified in security configuration:
 
-```ini
-[org.seedstack.ldap]
-server-host = ldaphost
-server-port = 53800
-account-dn = cn=admin, ou=people, dc=example,dc=com
-account-password = admin
-user-base = ou=people, dc=example,dc=com
-user-identity-attribute = sn
-group-base = ou=groups, dc=example,dc=com
+```yaml
+security:
+    realms: LdapRealm
 ```
 
-* server-host: the hostname where the ldap is
-* server-port: the port to use
-* account-dn: the dn of the account that will make the requests. If none, requests will be anonymous
-* account-password: password of the above account
-* user-base: base dn where the users can be found in the LDAP
-* user-identity-attribute: name of the attribute that is used to identify the user
-* group-base: base dn where groups can be found in the LDAP
+Configuration of the realm itself is done by defining the following properties:
 
-Then you can configure SEED security so it uses the LDAP Realm
-
-```ini
-[org.seedstack.seed.security]
-realms = LdapRealm
+{{% config p="ldap" %}}
+```yaml
+ldap:
+  # The hostname of the LDAP directory server
+  host: (String)
+  # The port of the LDAP directory server
+  port: (int)
+  # The number of connections in the pool (defaults to 8)
+  connectionNumber: (int)
+  # The distinguished name used to make the LDAP requests. If not specified, request will be anonymous
+  bindDN: (String)
+  # The password used to make the LDAP requests.  
+  bindPassword: (String)
+  # Configuration for users
+  user:
+    # Base distinguished name where users can be found in the LDAP
+    baseDN: (String)
+    # Name of the attribute that is used to identify the user (defaults to 'uid') 
+    idAttribute: (String)
+    # Additional attributes of the user to retrieve
+    additionalAttributes: (Set<String>)
+    # If present, only consider users having a matching objectclass attribute
+    objectClass: (String)
+  group:
+    # Base distinguished name where groups can be found in the LDAP
+    baseDN: (String)
+    # Name of the attribute that is used to reference membership (defaults to 'member') 
+    memberAttribute: (String)
+    # If present, only consider groups having a matching objectclass attribute
+    objectClass: (String)
 ```
+{{% /config %}}
 
-You can map the LDAP groups to your application functional roles
-```ini
-[org.seedstack.seed.security.roles]
-jedi = SEED.JEDI
-```
+{{% callout info %}}
+Additional group/role and permission mapping is done in [security configuration]({{< relref "docs/seed/manual/security.md" >}}) 
+as usual.
+{{% /callout %}}
 
-And associate permissions to those roles
-```ini
-jedi = lightSaber:*, academy:*
-```
+# Usage
 
-With this configuration, the LDAP realm will be able to authenticate your user with their id and password, and retrieve the groups through the LDAP.
+## Retrieving attributes
 
-# Retrieving attributes
-
-## From the current user
+### From the current user
 
 When authenticating the user, the LDAP Realm also puts in the user principals an entry point to the user LDAP attributes: _LdapUserContext_. You can then call the LdapService to retrieve attributes.
 
@@ -84,7 +92,7 @@ public class SomeClass {
 }
 ```
 
-## For any user
+### For any user
 
 You can also use the LdapService and LdapUserContext to retrieve user attributes from any user that you know the id
 
@@ -100,7 +108,7 @@ public class SomeClass {
 }
 ```
 
-# List a user groups
+## Retrieve groups of a user
 
 Once you have the user context you can also retrieve the list of the user groups
 
@@ -118,7 +126,8 @@ public class SomeClass {
 
 # Going further
 
-Seed uses [unboundid](https://www.unboundid.com/) library to connect to the ldap. You can inject its core component into your class to use it. Note that the connections you take from the pool are already configured and ready to be used.
+SeedStack uses [UnboundID](https://www.unboundid.com/) library to connect to the ldap. You can inject its core component into 
+your class to use it. Note that the connections you take from the pool are already configured and ready to be used.
 
 ```java
 public class SomeClass {
@@ -126,7 +135,7 @@ public class SomeClass {
     private LDAPConnectionPool ldapConnectionPool;
     
     public void someMethod() {
-        ldapConnectionPool.search(...);
+        ldapConnectionPool.search(/* ... */);
     }
 }
 ```
