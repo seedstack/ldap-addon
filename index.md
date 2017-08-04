@@ -62,7 +62,7 @@ ldap:
 {{% /config %}}
 
 {{% callout info %}}
-Additional group/role and permission mapping is done in [security configuration]({{< relref "docs/seed/manual/security.md" >}}) 
+Additional group/role and permission mapping is done in [security configuration]({{< ref "docs/seed/manual/security.md" >}}) 
 as usual.
 {{% /callout %}}
 
