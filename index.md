@@ -28,36 +28,37 @@ security:
 
 Configuration of the realm itself is done by defining the following properties:
 
-{{% config p="ldap" %}}
+{{% config p="security.ldap" %}}
 ```yaml
-ldap:
-  # The hostname of the LDAP directory server
-  host: (String)
-  # The port of the LDAP directory server
-  port: (int)
-  # The number of connections in the pool (defaults to 8)
-  connectionNumber: (int)
-  # The distinguished name used to make the LDAP requests. If not specified, request will be anonymous
-  bindDN: (String)
-  # The password used to make the LDAP requests.  
-  bindPassword: (String)
-  # Configuration for users
-  user:
-    # Base distinguished name where users can be found in the LDAP
-    baseDN: (String)
-    # Name of the attribute that is used to identify the user (defaults to 'uid') 
-    idAttribute: (String)
-    # Additional attributes of the user to retrieve
-    additionalAttributes: (Set<String>)
-    # If present, only consider users having a matching objectclass attribute
-    objectClass: (String)
-  group:
-    # Base distinguished name where groups can be found in the LDAP
-    baseDN: (String)
-    # Name of the attribute that is used to reference membership (defaults to 'member') 
-    memberAttribute: (String)
-    # If present, only consider groups having a matching objectclass attribute
-    objectClass: (String)
+security:
+  ldap:
+    # The hostname of the LDAP directory server
+    host: (String)
+    # The port of the LDAP directory server
+    port: (int)
+    # The number of connections in the pool (defaults to 8)
+    connectionNumber: (int)
+    # The distinguished name used to make the LDAP requests. If not specified, request will be anonymous
+    bindDN: (String)
+    # The password used to make the LDAP requests.  
+    bindPassword: (String)
+    # Configuration for users
+    user:
+      # Base distinguished name where users can be found in the LDAP
+      baseDN: (String)
+      # Name of the attribute that is used to identify the user (defaults to 'uid') 
+      idAttribute: (String)
+      # Additional attributes of the user to retrieve
+      additionalAttributes: (Set<String>)
+      # If present, only consider users having a matching objectclass attribute
+      objectClass: (String)
+    group:
+      # Base distinguished name where groups can be found in the LDAP
+      baseDN: (String)
+      # Name of the attribute that is used to reference membership (defaults to 'member') 
+      memberAttribute: (String)
+      # If present, only consider groups having a matching objectclass attribute
+      objectClass: (String)
 ```
 {{% /config %}}
 
