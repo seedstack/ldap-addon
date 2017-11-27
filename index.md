@@ -1,5 +1,6 @@
 ---
 title: "LDAP"
+addon: "LDAP"
 repo: "https://github.com/seedstack/ldap-addon"
 author: Yves DAUTREMAY
 description: "Provides a security realm which authenticates and authorizes subjects with an LDAP directory."
@@ -7,9 +8,7 @@ tags:
     - security
 zones:
     - Addons
-menu:
-    AddonLdap:
-        weight: 10
+noMenu: true    
 ---
 
 SeedStack LDAP addon enables your application to connect to an LDAP directory to identify, authenticate and authorize 
@@ -17,7 +16,7 @@ users. <!--more-->
 
 {{< dependency g="org.seedstack.addons.ldap" a="ldap" >}}
 
-# Configuration
+## Configuration
 
 To use the LDAP add-on, its realm must be specified in security configuration:
 
@@ -67,11 +66,11 @@ Additional group/role and permission mapping is done in [security configuration]
 as usual.
 {{% /callout %}}
 
-# Usage
+## Usage
 
-## Retrieving attributes
+### Retrieving attributes
 
-### From the current user
+#### From the current user
 
 When authenticating the user, the LDAP Realm also puts in the user principals an entry point to the user LDAP attributes: _LdapUserContext_. You can then call the LdapService to retrieve attributes.
 
@@ -93,7 +92,7 @@ public class SomeClass {
 }
 ```
 
-### For any user
+#### For any user
 
 You can also use the LdapService and LdapUserContext to retrieve user attributes from any user that you know the id
 
@@ -109,7 +108,7 @@ public class SomeClass {
 }
 ```
 
-## Retrieve groups of a user
+### Retrieve groups of a user
 
 Once you have the user context you can also retrieve the list of the user groups
 
@@ -125,7 +124,7 @@ public class SomeClass {
 }
 ```
 
-# Going further
+## Going further
 
 SeedStack uses [UnboundID](https://www.unboundid.com/) library to connect to the ldap. You can inject its core component into 
 your class to use it. Note that the connections you take from the pool are already configured and ready to be used.
